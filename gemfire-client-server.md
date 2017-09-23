@@ -122,5 +122,7 @@ public class Application {
 }
 ```
 
+> 而不是使用主要方法的简单Java类，您也可以使用Spring Boot。
+
 
 
