@@ -11,24 +11,23 @@
 添加以下Spring配置：
 
 ```
-  
         <context:annotation-config/>
 
-        
+
         <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
 
-        
+
         <bean class="sample.GemFireCacheServerReadyBeanPostProcessor"/>
 
-        
+
         <util:properties id="gemfireProperties">
                 <prop key="log-level">${sample.httpsession.gemfire.log-level:warning}</prop>
         </util:properties>
 
-        
+
         <gfe:client-cache properties-ref="gemfireProperties" pool-name="gemfirePool"/>
 
-        
+
         <gfe:pool keep-alive="false"
               ping-interval="5000"
               read-timeout="5000"
@@ -39,7 +38,7 @@
                     port="${spring.session.data.gemfire.port:${application.gemfire.client-server.port}}"/>
         </gfe:pool>
 
-        
+
         <bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
                   p:maxInactiveIntervalInSeconds="30" p:poolName="DEFAULT"/>
 ```
@@ -59,12 +58,44 @@ META-INF / spring / application.properties文件与PropertySourcesPlaceholderCon
 最后，注册了GemFireHttpSessionConfiguration以启用Spring Session功能。
 
 > 在典型的GemFire部署中，集群中可能包含数百个GemFire数据节点（服务器），客户端更常见地连接到集群中运行的一个或多个GemFire定位器。 定位器将客户端的元数据传递给可用的服务器，负载以及哪些服务器具有客户端感兴趣的数据，这对于单跳直接数据访问特别重要。 在GemFire的用户指南中查看有关客户端/服务器拓扑的更多详细信息。
-
+>
 > 有关配置Spring Data GemFire的更多信息，请参阅参考指南。
 
 ##### 服务端配置
 
+我们只涵盖了方程的一边。 我们还需要一个GemFire服务器，我们的客户端可以将会话状态信息与服务器通信并发送到管理中。
 
+在本示例中，我们将使用以下GemFire Server Java配置：
+
+```
+  
+        <context:annotation-config/>
+
+        
+        <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
+
+        
+        <util:properties id="gemfireProperties">
+                <prop key="name">GemFireClientServerHttpSessionXmlSample</prop>
+                <prop key="mcast-port">0</prop>
+                <prop key="log-level">${sample.httpsession.gemfire.log-level:warning}</prop>
+                <prop key="jmx-manager">true</prop>
+                <prop key="jmx-manager-start">true</prop>
+        </util:properties>
+
+        
+        <gfe:cache properties-ref="gemfireProperties"/>
+
+        
+        <gfe:cache-server auto-startup="true"
+                      bind-address="${application.gemfire.client-server.host}"
+                      host-name-for-clients="${application.gemfire.client-server.host}"
+                      port="${spring.session.data.gemfire.port:${application.gemfire.client-server.port}}"/>
+
+        
+        <bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
+                  p:maxInactiveIntervalInSeconds="30"/>
+```
 
 
 
