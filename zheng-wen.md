@@ -233,7 +233,6 @@ DelegatingFilterProxy将根据springSessionRepositoryFilter按名称查找一个
 
 ##### spring  java配置
 
-
 添加所需的依赖关系和存储库声明后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session和GemFire支持的实现替换HttpSession的Servlet过滤器。
 
 添加以下Spring配置：
@@ -370,78 +369,84 @@ serverRegionShort - 使用GemFire RegionShortcut（默认为PARTITION）指定Ge
 重要的是要注意，如果客户端区域是PROXY或CACHING\_PROXY，则GemFire客户端区域名称必须与服务器区域匹配相同的名称。如果用于存储Spring Sessions的客户端区域是LOCAL，则不需要匹配名称，但是请记住，您的会话状态不会传播到服务器，并且您失去了使用GemFire存储和管理分布式复制会话的所有好处集群中的状态信息。
 
 serverRegionShort在客户机/服务器缓存配置中被忽略，仅在使用对等（P2P）拓扑，更具体地说是GemFire对等体缓存时适用。
-####服务端配置
+
+#### 服务端配置
+
 我们只涵盖了等式的一边。 我们还需要一个GemFire服务器端，我们的客户端可以与服务器进行通话并且将Session状态发送至服务器端，以进行管理。
 
-在本示例中，GemFire服务端的Java配置如下：
-`@EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 
+在本示例中，GemFire服务端的Java配置如下：  
+\`
+
+```
+    @EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 
 public class ServerConfig {
+    static final int SERVER_PORT = 12480;
 
-        static final int SERVER_PORT = 12480;
+    static final String DEFAULT_GEMFIRE_LOG_LEVEL = "warning";
+    static final String SERVER_HOST = "localhost";
 
-        static final String DEFAULT_GEMFIRE_LOG_LEVEL = "warning";
-        static final String SERVER_HOST = "localhost";
+    @SuppressWarnings("resource")
+    public static void main(String[] args) throws IOException { 5⃣️
+            new AnnotationConfigApplicationContext(ServerConfig.class)
+                    .registerShutdownHook();
+    }
 
-        @SuppressWarnings("resource")
-        public static void main(String[] args) throws IOException { 5⃣️
-                new AnnotationConfigApplicationContext(ServerConfig.class)
-                        .registerShutdownHook();
-        }
+    @Bean
+    static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+            return new PropertySourcesPlaceholderConfigurer();
+    }
 
-        @Bean
-        static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-                return new PropertySourcesPlaceholderConfigurer();
-        }
+    Properties gemfireProperties() { 2⃣️
+            Properties gemfireProperties = new Properties();
 
-        Properties gemfireProperties() { 2⃣️
-                Properties gemfireProperties = new Properties();
+            gemfireProperties.setProperty("name", applicationName());
+            gemfireProperties.setProperty("mcast-port", "0");
+            gemfireProperties.setProperty("log-level", logLevel());
+            gemfireProperties.setProperty("jmx-manager", "true");
+            gemfireProperties.setProperty("jmx-manager-start", "true");
 
-                gemfireProperties.setProperty("name", applicationName());
-                gemfireProperties.setProperty("mcast-port", "0");
-                gemfireProperties.setProperty("log-level", logLevel());
-                gemfireProperties.setProperty("jmx-manager", "true");
-                gemfireProperties.setProperty("jmx-manager-start", "true");
+            return gemfireProperties;
+    }
 
-                return gemfireProperties;
-        }
+    String applicationName() {
+            return "samples:httpsession-gemfire-clientserver:"
+                    .concat(getClass().getSimpleName());
+    }
 
-        String applicationName() {
-                return "samples:httpsession-gemfire-clientserver:"
-                        .concat(getClass().getSimpleName());
-        }
+    String logLevel() {
+            return System.getProperty("sample.httpsession.gemfire.log-level",
+                    DEFAULT_GEMFIRE_LOG_LEVEL);
+    }
 
-        String logLevel() {
-                return System.getProperty("sample.httpsession.gemfire.log-level",
-                        DEFAULT_GEMFIRE_LOG_LEVEL);
-        }
+    @Bean
+    CacheFactoryBean gemfireCache() { 3⃣️
+            CacheFactoryBean gemfireCache = new CacheFactoryBean();
 
-        @Bean
-        CacheFactoryBean gemfireCache() { 3⃣️
-                CacheFactoryBean gemfireCache = new CacheFactoryBean();
+            gemfireCache.setClose(true);
+            gemfireCache.setProperties(gemfireProperties());
 
-                gemfireCache.setClose(true);
-                gemfireCache.setProperties(gemfireProperties());
+            return gemfireCache;
+    }
 
-                return gemfireCache;
-        }
+    @Bean
+    CacheServerFactoryBean gemfireCacheServer(Cache gemfireCache,
+                    @Value("${spring.session.data.gemfire.port:" + SERVER_PORT + "}") int port) { 4⃣️
 
-        @Bean
-        CacheServerFactoryBean gemfireCacheServer(Cache gemfireCache,
-                        @Value("${spring.session.data.gemfire.port:" + SERVER_PORT + "}") int port) { 4⃣️
+            CacheServerFactoryBean gemfireCacheServer = new CacheServerFactoryBean();
 
-                CacheServerFactoryBean gemfireCacheServer = new CacheServerFactoryBean();
+            gemfireCacheServer.setAutoStartup(true);
+            gemfireCacheServer.setBindAddress(SERVER_HOST);
+            gemfireCacheServer.setCache(gemfireCache);
+            gemfireCacheServer.setHostNameForClients(SERVER_HOST);
+            gemfireCacheServer.setMaxTimeBetweenPings(Long.valueOf(TimeUnit.SECONDS.toMillis(60)).intValue());
+            gemfireCacheServer.setPort(port);
 
-                gemfireCacheServer.setAutoStartup(true);
-                gemfireCacheServer.setBindAddress(SERVER_HOST);
-                gemfireCacheServer.setCache(gemfireCache);
-                gemfireCacheServer.setHostNameForClients(SERVER_HOST);
-                gemfireCacheServer.setMaxTimeBetweenPings(Long.valueOf(TimeUnit.SECONDS.toMillis(60)).intValue());
-                gemfireCacheServer.setPort(port);
+            return gemfireCacheServer;
+    }
+```
 
-                return gemfireCacheServer;
-        }
-}
-`
+}  
+\`
 
 1⃣️在服务器端也使用@EnableGemFireHttpSession注解来配置Spring Session。 这确保了客户端和服务端的区域名称匹配（在此示例中，我们使用默认的“ClusteredSpringSessions”）。 我们还将Session的过期时间设置为30秒。 稍后我们将看到如何使用这个过期时间。
 
@@ -465,11 +470,14 @@ src/main/java/sample/Initializer.java
 
 public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣️
 
-        public Initializer() {
-                super(ClientConfig.class); 2⃣️
-        }
-}
-注意：我们的类（Initializer）的名称并不重要。 重要的是需要扩展AbstractHttpSessionApplicationInitializer类即可。
+```
+    public Initializer() {
+            super(ClientConfig.class); 2⃣️
+    }
+```
+
+}  
+注意：我们的类（Initializer）的名称并不重要。 重要的是需要扩展AbstractHttpSessionApplicationInitializer类即可。  
 1⃣️第一步是扩展AbstractHttpSessionApplicationInitializer类。 这确保了一个名为springSessionRepositoryFilter的Spring bean已经注册到我们的Servlet容器并应用于每个请求。
 
 2⃣️AbstractHttpSessionApplicationInitializer还提供了一种便于Spring加载我们的ClientConfig的机制。
