@@ -1,6 +1,4 @@
-
----
-
+![](/Users/gangzi/Desktop/D16300DF-7129-40A9-ABB3-6423ED500F35.png)
 ---
 
 # Spring Session
@@ -8,6 +6,11 @@
 Rob Winch, Vedran Pavić, Jakub Kubrynski
 
 Version 1.3.1.RELEASE
+
+---
+# 关于本翻译
+这是本人工作之余翻译的，方便自己使用，也贡献出来方便其他人。有翻译不正确的地方请指正。如果您觉得本文对您有所帮助，不妨打赏小弟一杯咖啡。
+![](/Users/gangzi/Desktop/9EE096F7-33E3-4B41-8B63-735068213E73.png)
 
 ---
 
@@ -378,7 +381,7 @@ serverRegionShort在客户机/服务器缓存配置中被忽略，仅在使用�
 \`
 
 ```
-    @EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 
+@EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 1⃣️
 public class ServerConfig {
     static final int SERVER_PORT = 12480;
 
@@ -458,7 +461,7 @@ public class ServerConfig {
 
 5⃣️最后，我们将一个main方法声明为从命令行启动作为运行GemFire Server的入口点。
 
-Java Servlet容器初始化
+##### Java Servlet容器初始化
 
 我们的Spring Java配置创建了一个名为springSessionRepositoryFilter的Spring bean，该Bean实现了Filter接口。 springSessionRepositoryFilter bean负责使用基于GemFire支持的Spring Session来替换HttpSession。
 
@@ -488,30 +491,30 @@ public class Initializer extends AbstractHttpSessionApplicationInitializer { 1�
 
 > [HttpSession with GemFire \(Client-Server\) using XML Sample](https://docs.spring.io/spring-session/docs/1.3.1.RELEASE/reference/html5/#samples)提供了一个关于如何使用基于GemFire实现的Spring Session来替换HttpSession的工作示例。 您可以阅读下面的集成基本步骤，但是当与您自己的应用程序集成时，您可以使用XML Guide与GemFire（Client-Server）一起使用详细的HttpSession。
 
-##### Spring的XML配置 {#httpsession-spring-xml-configuration}
+##### Spring的XML配置
 
 添加所需的依赖关系和存储库声明后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session替换HttpSession的Servlet过滤器。
 
 添加以下Spring配置：
 
 ```
+		1⃣️
         <context:annotation-config/>
-
-
+		2⃣️
         <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
-
+		3⃣️
 
         <bean class="sample.GemFireCacheServerReadyBeanPostProcessor"/>
-
+		4⃣️
 
         <util:properties id="gemfireProperties">
                 <prop key="log-level">${sample.httpsession.gemfire.log-level:warning}</prop>
         </util:properties>
-
+		5⃣️
 
         <gfe:client-cache properties-ref="gemfireProperties" pool-name="gemfirePool"/>
 
-
+		6⃣️
         <gfe:pool keep-alive="false"
               ping-interval="5000"
               read-timeout="5000"
@@ -522,24 +525,24 @@ public class Initializer extends AbstractHttpSessionApplicationInitializer { 1�
                     port="${spring.session.data.gemfire.port:${application.gemfire.client-server.port}}"/>
         </gfe:pool>
 
-
+		7⃣️
         <bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
                   p:maxInactiveIntervalInSeconds="30" p:poolName="DEFAULT"/>
 ```
 
-使用&lt;context：annotation-config /&gt;元素启用Spring注释配置支持，以便在Spring配置中声明的任何使用Spring支持的Spring或Standard Java注释的Spring bean都将被正确配置。
+1⃣️使用&lt;context：annotation-config /&gt;元素启用Spring注释配置支持，以便在Spring配置中声明的任何使用Spring支持的Spring或Standard Java注释的Spring bean都将被正确配置。
 
-META-INF / spring / application.properties文件与PropertySourcesPlaceholderConfigurer bean一起使用，以将Spring XML配置元数据中的占位符替换为approrpriate属性值。
+2⃣️META-INF / spring / application.properties文件与PropertySourcesPlaceholderConfigurer bean一起使用，以将Spring XML配置元数据中的占位符替换为approrpriate属性值。
 
-然后注册“GemFireCacheSeverReadyBeanPostProcessor”，以确定指定主机/端口上的GemFire Server是否正在运行并监听客户端连接，阻止客户端启动，直到服务器可用并准备就绪。
+3⃣️然后注册“GemFireCacheSeverReadyBeanPostProcessor”，以确定指定主机/端口上的GemFire Server是否正在运行并监听客户端连接，阻止客户端启动，直到服务器可用并准备就绪。
 
-接下来，我们包括一个Properties bean，以使用GemFire的系统属性来配置GemFire客户端缓存的某些方面。在这种情况下，我们只是从应用程序特定的System属性设置GemFire的日志级别，如果未指定，则默认为警告。
+4⃣️接下来，我们包括一个Properties bean，以使用GemFire的系统属性来配置GemFire客户端缓存的某些方面。在这种情况下，我们只是从应用程序特定的System属性设置GemFire的日志级别，如果未指定，则默认为警告。
 
-然后我们创建一个使用我们的gemfireProperties初始化的GemFire ClientCache实例。
+5⃣️然后我们创建一个使用我们的gemfireProperties初始化的GemFire ClientCache实例。
 
-我们配置一个客户端池池，以与客户端/服务器拓扑中的GemFire服务器进行通信。在我们的配置中，我们使用明智的设置超时，连接数等。此外，我们的池已配置为直接连接到服务器。
+6⃣️我们配置一个客户端池池，以与客户端/服务器拓扑中的GemFire服务器进行通信。在我们的配置中，我们使用明智的设置超时，连接数等。此外，我们的池已配置为直接连接到服务器。
 
-最后，注册了GemFireHttpSessionConfiguration以启用Spring Session功能。
+7⃣️最后，注册了GemFireHttpSessionConfiguration以启用Spring Session功能。
 
 > 在典型的GemFire部署中，集群中可能包含数百个GemFire数据节点（服务器），客户端更常见地连接到集群中运行的一个或多个GemFire定位器。 定位器将客户端的元数据传递给可用的服务器，负载以及哪些服务器具有客户端感兴趣的数据，这对于单跳直接数据访问特别重要。 在GemFire的用户指南中查看有关客户端/服务器拓扑的更多详细信息。
 >
@@ -552,12 +555,12 @@ META-INF / spring / application.properties文件与PropertySourcesPlaceholderCon
 在本示例中，我们将使用以下GemFire Server Java配置：
 
 ```
+		1⃣️
         <context:annotation-config/>
-
-
+		2⃣️
         <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
 
-
+		3⃣️
         <util:properties id="gemfireProperties">
                 <prop key="name">GemFireClientServerHttpSessionXmlSample</prop>
                 <prop key="mcast-port">0</prop>
@@ -565,32 +568,32 @@ META-INF / spring / application.properties文件与PropertySourcesPlaceholderCon
                 <prop key="jmx-manager">true</prop>
                 <prop key="jmx-manager-start">true</prop>
         </util:properties>
-
+		4⃣️
 
         <gfe:cache properties-ref="gemfireProperties"/>
-
+		5⃣️
 
         <gfe:cache-server auto-startup="true"
                       bind-address="${application.gemfire.client-server.host}"
                       host-name-for-clients="${application.gemfire.client-server.host}"
                       port="${spring.session.data.gemfire.port:${application.gemfire.client-server.port}}"/>
 
-
+		6⃣️
         <bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
                   p:maxInactiveIntervalInSeconds="30"/>
 ```
 
-首先，我们使用&lt;context：annotation-config&gt;元素启用Spring注释配置，以便在Spring配置中声明的任何使用Spring支持的Spring或Standard Java注释的Spring bean都将被正确配置。
+1⃣️首先，我们使用&lt;context：annotation-config&gt;元素启用Spring注释配置，以便在Spring配置中声明的任何使用Spring支持的Spring或Standard Java注释的Spring bean都将被正确配置。
 
-注册了一个PropertySourcesPlaceholderConfigurer，以便在我们的Spring XML配置元数据中替换META-INF / spring / application.properties文件中的属性值中的占位符。
+2⃣️注册了一个PropertySourcesPlaceholderConfigurer，以便在我们的Spring XML配置元数据中替换META-INF / spring / application.properties文件中的属性值中的占位符。
 
-接下来，我们使用GemFire系统属性配置GemFire服务器非常像我们的P2P示例。将mcast-port设置为0并且没有指定locator属性，我们的服务器将是独立的。我们还允许一个JMX客户端（例如Gfsh）使用特定于Ge​​mFire的JMX系统属性连接到我们的服务器。
+3⃣️接下来，我们使用GemFire系统属性配置GemFire服务器非常像我们的P2P示例。将mcast-port设置为0并且没有指定locator属性，我们的服务器将是独立的。我们还允许一个JMX客户端（例如Gfsh）使用特定于Ge​​mFire的JMX系统属性连接到我们的服务器。
 
-然后我们创建一个使用我们的GemFire系统属性初始化的GemFire对等缓存的实例。
+4⃣️然后我们创建一个使用我们的GemFire系统属性初始化的GemFire对等缓存的实例。
 
-我们还设置了运行在localhost上的GemFire CacheServer实例，侦听端口11235，准备接受我们的客户端连接。
+5⃣️我们还设置了运行在localhost上的GemFire CacheServer实例，侦听端口11235，准备接受我们的客户端连接。
 
-最后，我们通过注册GemFireHttpSessionConfiguration的实例，在客户端上使用相同的Spring Session功能，但我们将会话到期超时设置为30秒。我们稍后会解释这是什么意思。
+6⃣️最后，我们通过注册GemFireHttpSessionConfiguration的实例，在客户端上使用相同的Spring Session功能，但我们将会话到期超时设置为30秒。我们稍后会解释这是什么意思。
 
 GemFire Server配置可以通过以下方式进行引导：
 
@@ -612,9 +615,596 @@ public class Application {
 
 主要来说，配置来自META-INF / spring / session-server.xml文件，这也是Spring样例中没有使用Spring Boot的原因，因为使用XML似乎失败了使用Spring Boot的用途和好处。 但是，本示例将介绍如何使用Spring XML配置GemFire客户端和服务器。
 
-##### XML Servlet Container Initialization {#xml-servlet-container-initialization-2}
+##### Servlet容器的XML配置
+我们的Spring XML配置创建了一个名为springSessionRepositoryFilter的Spring bean，实现了Filter。 springSessionRepositoryFilter bean负责使用Spring Session和GemFire支持的自定义实现替换HttpSession。
+
+为了使我们的过滤器能够做到这一点，我们需要指示Spring加载session-client.xml配置文件。 我们通过以下配置来做到这一点：
+
+src/main/webapp/WEB-INF/web.xml
+`<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring/session-client.xml</param-value>
+</context-param>
+<listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>`
+ContextLoaderListener读取contextConfigLocation上下文参数值，并选取我们的session-client.xml配置文件。
+
+最后，我们需要确保我们的Servlet容器（即Tomcat）为每个请求使用我们的springSessionRepositoryFilter。
+
+以下代码段为我们执行最后一步：
+`<filter>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+</filter-mapping>`
+DelegatingFilterProxy将通过springSessionRepositoryFilter的名称查找一个bean，并将其转换为Filter。 对于调用DelegatingFilterProxy的每个请求，将调用springSessionRepositoryFilter。
+### 4.3.2 GemFire Peer-To-Peer (P2P)
+
+也许较不常见的是使用对等（P2P）拓扑将Spring Session应用程序配置为GemFire群集中的对等成员。在此配置中，Spring Session应用程序将是GemFire群集中的实际数据节点（服务器），而不是以前的缓存客户机。
+
+这种方法的一个优点是应用程序与应用程序的状态（即数据）的接近程度。然而，还有其他有效的方法来完成类似的数据相关计算，例如使用GemFire的功能执行。当GemFire在Spring Session中作为提供商时，任何GemFire的其他功能都可以使用。
+
+P2P对于测试目的以及更小，更集中和自包含的应用程序（如微服务架构中的应用程序）非常有用，并且绝对会提高应用程序的延迟，吞吐量和一致性需求。
+
+您可以使用以下任一方式配置对等（P2P）拓扑：
+
+* 基于Java的配置
+* 基于XML的配置
 
 
+#####GemFire Peer-To-Peer (P2P) 基于java的配置
+本节介绍如何使用GemFire的对等（P2P）拓扑来使用基于Java的配置来支持HttpSession。
+使用GemFire（P2P）示例的HttpSession提供了一个关于如何集成Spring Session和GemFire以使用Java配置替换HttpSession的工作示例。 您可以阅读下面的集成基本步骤，但是当您与自己的应用程序集成时，您可以随时使用“GemFire（P2P）指南”中的详细HttpSession。
+#####Spring的java配置
+添加所需的依赖关系和存储库声明后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session和GemFire支持的实现替换HttpSession的Servlet过滤器。
+
+添加以下Spring配置：
+
+`@EnableGemFireHttpSession 
+public class Config {
+
+        @Bean
+        Properties gemfireProperties() { 
+                Properties gemfireProperties = new Properties();
+
+                gemfireProperties.setProperty("name", "GemFireP2PHttpSessionSample");
+                gemfireProperties.setProperty("mcast-port", "0");
+                gemfireProperties.setProperty("log-level",
+                                System.getProperty("sample.httpsession.gemfire.log-level", "warning"));
+                gemfireProperties.setProperty("jmx-manager", "true");
+                gemfireProperties.setProperty("jmx-manager-start", "true");
+
+                return gemfireProperties;
+        }
+
+        @Bean
+        CacheFactoryBean gemfireCache() { 
+                CacheFactoryBean gemfireCache = new CacheFactoryBean();
+
+                gemfireCache.setClose(true);
+                gemfireCache.setProperties(gemfireProperties());
+
+                return gemfireCache;
+        }
+}`
+
+@EnableGemFireHttpSession注释创建一个名为springSessionRepositoryFilter的Spring bean，实现Filter。 这个过滤器是用Hibernate来替代HttpSession的一个实现。 在这种情况下，Spring Session由GemFire支持。
+然后，我们使用标准的GemFire系统属性配置GemFire对等缓存。 我们使用name属性给GemFire数据节点一个名称，并将mcast-port设置为0.由于缺少locators属性，该数据节点将是一个独立的服务器。 GemFire的日志级别使用用户可以使用Maven或Gradle运行此示例应用程序时在命令行中指定的应用程序特定的System属性（sample.httpsession.gemfire.log级别）设置（默认为“warning”）。
+最后，我们创建一个GemFire对等体缓存的实例，将GemFire嵌入与运行的Spring Session示例应用程序相同的JVM进程。
+此外，我们还将此数据节点（服务器）配置为GemFire Manager，并使用特定于GemFire的JMX系统属性，使JMX客户端（例如Gfsh）能够连接到正在运行的数据节点。
+有关配置Spring Data GemFire的更多信息，请参阅参考指南。
+@EnableGemFireHttpSession注释使开发人员能够使用以下属性来配置Spring Session和GemFire的某些方面：
+maxInactiveIntervalInSeconds - 控制HttpSession空闲超时到期（默认为30分钟）。
+
+regionName - 指定用于存储HttpSession状态的GemFire区域的名称（默认为“ClusteredSpringSessions”）。
+
+serverRegionShort - 使用GemFire RegionShortcut（默认为PARTITION）指定GemFire数据管理策略。
+clientRegionShort在对等缓存配置中被忽略，仅适用于客户机 - 服务器拓扑，更具体地说是使用GemFire客户端缓存。
+
+##### Java Servlet容器初始化
+我们的Spring Java配置创建了一个名为springSessionRepositoryFilter的Spring bean，实现了Filter。 springSessionRepositoryFilter bean负责使用Spring Session和GemFire支持的自定义实现替换HttpSession。
+
+为了使我们的过滤器能够做到这一点，Spring需要加载我们的Config类。 我们还需要确保我们的Servlet容器（即Tomcat）为每个请求使用我们的springSessionRepositoryFilter。 幸运的是，Spring Session提供了一个名为AbstractHttpSessionApplicationInitializer的实用程序类，使这两个步骤都非常容易。
+
+你可以在下面找到一个例子：
+
+src/main/java/sample/Initializer.java
+
+```
+public class Initializer extends AbstractHttpSessionApplicationInitializer { 
+
+        public Initializer() {
+                super(Config.class); 
+        }
+}
+```
+> 我们的类（Initializer）的名称并不重要。 重要的是我们扩展AbstractHttpSessionApplicationInitializer。
+
+第一步是扩展AbstractHttpSessionApplicationInitializer。 这确保了一个名为springSessionRepositoryFilter的Spring bean已经注册到我们的Servlet容器并用于每个请求。
+AbstractHttpSessionApplicationInitializer还提供了一种容易允许Spring加载我们的Config的机制。
+##### GemFire Peer-To-Peer (P2P) 基于XML的配置
+
+本节介绍如何使用GemFire的点对点（P2P）拓扑来使用基于XML的配置来支持HttpSession。
+> 使用XML Sample的GemFire（P2P）HttpSession提供了一个关于如何集成Spring Session和GemFire以使用XML配置替换HttpSession的工作示例。 您可以阅读下面的集成基本步骤，但是当与您自己的应用程序集成时，建议您使用XML Guide与GemFire（P2P）一起使用详细的HttpSession。
+
+##### Spring的XML配置
+添加所需的依赖关系和存储库声明后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session和GemFire支持的实现替换HttpSession的Servlet过滤器。
+添加以下Spring配置：
+src/main/webapp/WEB-INF/spring/session.xml
+
+```
+<context:annotation-config/>
+<context:property-placeholder/>
+<bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"/>
+<util:properties id="gemfireProperties">
+    <prop key="name">GemFireP2PHttpSessionXmlSample</prop>
+    <prop key="mcast-port">0</prop>
+    <prop key="log-level">${sample.httpsession.gemfire.log-level:warning}</prop>
+    <prop key="jmx-manager">true</prop>
+    <prop key="jmx-manager-start">true</prop>
+</util:properties>
+<gfe:cache properties-ref="gemfireProperties" use-bean-factory-locator="false"/>
+```
+我们使用<context：annotation-config />和GemFireHttpSessionConfiguration的组合，因为Spring Session还没有提供XML命名空间支持（参见gh-104）。这将创建一个名为springSessionRepositoryFilter的Spring bean，它实现Filter。这个过滤器是用Hibernate来替代HttpSession的一个实现。在这种情况下，Spring Session由GemFire支持。
+然后，我们使用标准的GemFire系统属性配置GemFire对等缓存。我们使用name属性给GemFire数据节点一个名称，并将mcast-port设置为0.由于缺少locators属性，该数据节点将是一个独立的服务器。 GemFire的日志级别使用用户可以使用Maven或Gradle运行此应用程序时在命令行中指定的应用程序特定的System属性（sample.httpsession.gemfire.log级别）进行设置（默认为“warning”） 。
+最后，我们创建一个GemFire对等体缓存的实例，将GemFire嵌入与运行的Spring Session示例应用程序相同的JVM进程。
+
+> 此外，我们还将此数据节点（服务器）配置为GemFire Manager，并使用特定于GemFire的JMX系统属性，使JMX客户端（例如Gfsh）能够连接到正在运行的数据节点。
+
+> 有关配置Spring Data GemFire的更多信息，请参阅参考指南。
+
+#####  Servlet容器初始化的XML配置
+
+我们的Spring XML配置创建了一个名为springSessionRepositoryFilter的Spring bean，实现了Filter。 springSessionRepositoryFilter bean负责使用Spring Session和GemFire支持的自定义实现替换HttpSession。
+
+为了使我们的过滤器能够实现其魔力，我们需要指示Spring加载我们的session.xml配置文件。 我们通过以下配置来做到这一点：
+
+src/main/webapp/WEB-INF/web.xml
+
+```
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        /WEB-INF/spring/*.xml
+    </param-value>
+</context-param>
+<listener>
+    <listener-class>
+        org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+</listener>
+```
+ContextLoaderListener读取contextConfigLocation上下文参数值，并选择我们的session.xml配置文件。
+
+最后，我们需要确保我们的Servlet容器（即Tomcat）为每个请求使用我们的springSessionRepositoryFilter。
+
+以下代码段为我们执行最后一步：
+
+src/main/webapp/WEB-INF/web.xml
+
+```
+<filter>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+</filter-mapping>
+```
+DelegatingFilterProxy将通过springSessionRepositoryFilter的名称查找一个bean，并将其转换为Filter。 对于调用DelegatingFilterProxy的每个请求，将调用springSessionRepositoryFilter。
+## 4.4 Spring Session-使用JDBC的HttpSession
+在使用HttpSession的任何功能之前通过添加一个Servlet过滤器，就可以启用Spring Session，可以通过如下几种方式进行启用：
+
+* 基于Java的配置
+* 基于XML的配置
+* 基于Spring Boot的配置
+
+
+### 4.4.1. 基于Java配置JDBC
+
+本节介绍基于Java配置的方式如何使用关系型数据库支持HttpSession。
+
+> HttpSession JDBC样例提供了一个可执行的样例，这个样例提供了如何基于Java配置整合Spring Session和HttpSession。你可以阅读以下的一些基础步骤，但是当您与自己的应用程序整合时，推荐遵循详细的HttpSession JDBC参考指南。
+
+#### Spring Java配置
+
+在添加完成必要的依赖之后，我们就可以创建我们自己的配置。Spring配置负责创建一个Servlet过滤器，这个过滤器通过一个使用Spring Session支持的实现去替换HttpSession。添加如下的Spring配置：
+
+```
+@EnableJdbcHttpSession 1⃣️
+public class Config {
+    @Bean
+    public EmbeddedDatabase dataSource() {
+        return new EmbeddedDatabaseBuilder() 2⃣️
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("org/springframework/session/jdbc/schema-h2.sql").build();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource); 3⃣️
+    }
+}
+```
+
+1⃣️@EnableJdbcHttpSession 注解创建了一个实现了Filter接口，命名为springSessionRepositoryFilter的Bean。该过滤器Bean负责使用Spring Session支持的一个实现去替换HttpSession，这个实例中Spring Session由关系型数据库支持。
+
+2⃣️我们创建一个嵌入式数据库H2的实例，使Spring Session连接这个嵌入式数据实例。并且配置Spring Session在应用H2数据库时的SQL脚本，通过SQL脚本来创建数据表。
+
+3⃣️我们创建一个transactionManager去管理前面所创建的数据库的事务。
+对于如何配置数据访问的一些相关概念的附加信息，请参考Spring Framework参考文档
+
+##### Java Servlet容器初始化
+
+我们的Spring配置文件已经创建了一个实现了Filter接口的名为springSessionRepositoryFilter 的Bean。springSessionRepositoryFilter负责使用一个支持Spring Session的实现替换HttpSession。
+
+为了让我们的Filter发挥它的魔力，Spring需要加载我们的Config类。最后我们需要确保每次请求时Servlet容器都使用了springSessionRepositoryFilter。幸运的是，Spring Session提供了一个很便捷的名为AbstractHttpSessionApplicationInitializer的类，使用这个类可以让加载Config类变得非常的容易。参考示例如下：
+
+```
+public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣️
+
+    public Initializer() {
+        super(Config.class); 2⃣️
+    }
+}
+```
+> 我们自己的类（Initializer ）的命名我们并不关心，最重要的是要继承AbstractHttpSessionApplicationInitializer。
+
+1⃣️第一步是需要继承AbstractHttpSessionApplicationInitializer。这样可以确保名为springSessionRepositoryFilter 的Spring Bean被注册到Servlet容器中并为每次请求提供处理。
+2⃣️AbstractHttpSessionApplicationInitializer也提供了一种机制可以非常容易的确保Spring加载Config。
+### 4.4.2. 基于XML配置JDBC
+
+本节介绍基于XML配置的方式如何使用关系型数据库支持HttpSession。
+
+> HttpSession JDBC XML样例提供了一个可执行的样例，这个样例提供了如何基于XML配置整合Spring Session和HttpSession。你可以阅读以下的一些基础步骤，但是当您与自己的应用程序整合时，推荐遵循详细的HttpSession JDBC XML参考指南。
+
+##### Spring XML配置
+
+添加必要的依赖之后，我们需要创建我们自己的Spring配置。Spring配置主要负责创建一个Spring Session支持的实现去替换HttpSession。Spring配置添加如下：
+
+```
+1⃣️
+<context:annotation-config/>
+
+<bean class="org.springframework.session.jdbc.config.annotation.web.http.JdbcHttpSessionConfiguration"/>
+2⃣️
+<jdbc:embedded-database id="dataSource" database-name="testdb" type="H2">
+    <jdbc:script location="classpath:org/springframework/session/jdbc/schema-h2.sql"/>
+</jdbc:embedded-database>
+3⃣️
+<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <constructor-arg ref="dataSource"/>
+</bean>
+```
+
+1⃣️我们使用context:annotation-config和JdbcHttpSessionConfiguration主要是因为Spring Session没有提供XML命名空间的支持。这就创建了一个实现了Filter的名为springSessionRepositoryFilter的Spring Bean。此过滤器负责使用Spring Session支持的一个实现去替换HttpSession，这个实例中Spring Session由关系型数据库支持。
+2⃣️我们创建一个嵌入式数据库H2的实例，使Spring Session连接这个嵌入式数据实例。并且配置Spring Session在应用H2数据库时的SQL脚本，通过SQL脚本来创建数据表。
+3⃣️我们创建一个transactionManager去管理前面所创建的数据库的事务。
+
+对于如何配置数据访问的一些相关概念的附加信息，请参考Spring Framework参考文档
+
+##### Servlet容器初始化的XML配置
+
+Spring配置文件创建了一个实现Filter的名为springSessionRepositoryFilter的Bean。springSessionRepositoryFilter负责使用一个支持Spring Session的个性化实现替换HttpSession。
+
+为了让我们的Filter发挥它的魔力，我们需要指示Spring加载我们的session.xml配置文件，我们按照如下配置指示Spring加载session.xml配置文件。
+
+src/main/webapp/WEB-INF/web.xml
+
+```
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        /WEB-INF/spring/*.xml
+    </param-value>
+</context-param>
+<listener>
+    <listener-class>
+        org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+</listener>
+```
+ContextLoaderListener读contextConfigLocation并抽出session.xml配置内容。
+
+最后我们需要确保Servlet容器（如Tomcat）的每个请求都使用了springSessionRepositoryFilter，下面的这个代码片段为我们执行了最后一步：
+
+src/main/webapp/WEB-INF/web.xml
+
+```
+<filter>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+</filter-mapping>
+```
+DelegatingFilterProxy会根据名称springSessionRepositoryFilter去寻找Bean并将其转化成Filter。对于调用DelegatingFilterProxy的每各请求，将调用springSessionRepositoryFilter。
+
+### 4.4.3. 基于Spring Boot配置JDBC
+
+本节主要介绍在使用Spring Boot的时候如何使用关系型数据库去支持HttpSession。
+
+> HttpSession JDBC Spring Boot样例提供了一个可执行的样例，这个样例提供了在使用Spring Boot的时候如何整合Spring Session和HttpSession。你可以阅读以下的一些基础步骤，但是当您与自己的应用程序整合时，推荐遵循详细的HttpSession JDBC Spring Boot参考指南。
+
+##### Spring Boot配置
+
+添加所需的依赖关系后，我们可以创建我们的Spring配置。 Spring配置主要负责创建一个Spring Session支持的实现去替换HttpSession。Spring配置添加如下：
+```
+@EnableJdbcHttpSession 
+public class HttpSessionConfig {
+}
+```
+1⃣️@EnableJdbcHttpSession注解创建一个Spring Bean，名称为springSessionRepositoryFilter，该Bean实现了Filter接口。 这个过滤器是负责替换由Spring Session支持的HttpSession实现的过程。 在这种情况下，Spring Session由关系数据库支持。
+
+##### 配置DataSource
+
+Spring Boot会自动创建DataSource连接Spring Session和嵌入的H2数据库实例。在生产环境中，你需要确保更新你的配置到你的关系型数据库中。例如，你需要在application.properties包含下列内容：
+
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/myapp
+spring.datasource.username=myapp
+spring.datasource.password=secret
+```
+
+更多内容，请参考Spring Boot参考文档的配置数据源部分。
+
+##### Servlet 容器初始化
+
+Spring Boot配置文件创建了一个实现了Filter接口的名为springSessionRepositoryFilter的Bean，springSessionRepositoryFilter负责使用一个支持Spring Session的个性化实现替换HttpSession。
+
+为了让我们的Filter发挥它的魔力，Spring需要加载我们的Config类。最后我们需要确保每次请求Servlet容器都使用了springSessionRepositoryFilter。幸运的是Spring Boot已经帮我们实现了。
+## 4.5 使用Mongo的HttpSession
+在使用HttpSession的任何东西之前，通过添加Servlet过滤器来启用使用HttpSession的Spring Session支持。
+
+本节介绍基于Java的配置方式如何使用Mongo来支持HttpSession。
+> HttpSession Mongo Sample提供了一个关于如何使用Java配置集成Spring Session和HttpSession的工作示例。 您可以阅读下面的集成基本步骤，但是当您与自己的应用程序集成时，建议您遵循详细的HttpSession指南。
+所有您需要做的是添加以下Spring配置：
+
+```
+@EnableMongoHttpSession 1⃣️
+public class HttpSessionConfig {
+
+        @Bean
+        public JdkMongoSessionConverter jdkMongoSessionConverter() {
+                return new JdkMongoSessionConverter(); 2⃣️
+        }
+}
+```
+1⃣️@EnableMongoHttpSession注释创建一个Spring Bean，名称为springSessionRepositoryFilter，实现Filter接口。 这个过滤器负责将Http Session替换为Spring Session。 在这种情况下，Spring Session由Mongo支持。
+
+2⃣️我们显式地配置JdkMongoSessionConverter，因为Spring Security的对象不能使用Jackson自动保留（默认情况下，如果Jackson位于类路径上）。
+### 4.5.1 Session序列化机制
+为了能够在MongoDB中保留Session对象，我们需要提供序列化/反序列化机制。 根据您的类路径，Spring Session将选择两个内置转换器之一：
+
+* 当ObjectMapper类可用时，JacksonMongoSessionConverter，或
+* 否则JdkMongoSessionConverter。
+
+##### JacksonMongoSessionConverter
+这个机制使用Jackson将Session对象序列化成JSON。 当在类路径上检测到Jackson时，并且用户尚未明确注册AbstractMongoSessionConverter Bean时，JacksonMongoSessionConverter将自动被启用。
+如果您想提供定制的Jackson模块，您可以通过明确注册JacksonMongoSessionConverter：
+
+```
+@Configuration
+@EnableMongoHttpSession
+public class MongoJacksonSessionConfiguration {
+
+        @Bean
+        public AbstractMongoSessionConverter mongoSessionConverter() {
+                return new JacksonMongoSessionConverter(getJacksonModules());
+        }
+
+        public Iterable<Module> getJacksonModules() {
+                return Collections.<Module>singletonList(new MyJacksonModule());
+        }
+}
+
+```
+##### JdkMongoSessionConverter
+JdkMongoSessionConverter使用标准Java序列化机制将Session属性以二进制形式映射到MongoDB。 然而，标准Session元素（如id，访问时间等）仍然被写为一个普通的Mongo对象，可以无需额外的工作就可以读取和查询。如果Jackson库不在类路径，并且没有明确的AbstractMongoSessionConverter Bean被定义， 则JdkMongoSessionConverter被使用。 您可以通过将其定义为Bean来显式注册JdkMongoSessionConverter。
+
+```
+@Configuration
+@EnableMongoHttpSession
+public class MongoJdkSessionConfiguration {
+
+        @Bean
+        public AbstractMongoSessionConverter mongoSessionConverter() {
+                return new JdkMongoSessionConverter();
+        }
+}
+```
+JdkMongoSessionConverter还有一个带有Serializer和Deserializer两个参数的构造函数，允许您传递自定义实现，这在要使用非默认类加载器时尤为重要。
+#####使用自定义转换器
+您可以通过扩展AbstractMongoSessionConverter类来创建自己的Session转换器。 该实现将用于对您的对象进行序列化，反序列化和提供访问Session的查询。
+## 4.6 使用Hazelcast的HttpSession
+在使用HttpSession的任何东西之前，通过添加Servlet过滤器来启用使用HttpSession的Spring Session。
+
+本节介绍如何使用Hazelcast基于Java的配置来返回HttpSession。
+Hazelcast Spring Sample提供了一个关于如何使用Java配置集成Spring Session和HttpSession的工作示例。 您可以阅读下面的集成基本步骤，但是当与您自己的应用程序集成时，您可以遵循详细的“Hazelcast Spring指南”。
+##### Spring配置
+添加所需的依赖关系后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session替换HttpSession的Servlet过滤器。 添加以下Spring配置：
+
+```
+@EnableHazelcastHttpSession 1⃣️
+@Configuration
+public class HazelcastHttpSessionConfig {
+
+        @Bean
+        public HazelcastInstance hazelcastInstance() {
+                MapAttributeConfig attributeConfig = new MapAttributeConfig()
+                                .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
+                                .setExtractor(PrincipalNameExtractor.class.getName());
+
+                Config config = new Config();
+
+                config.getMapConfig("spring:session:sessions") 2⃣️
+                                .addMapAttributeConfig(attributeConfig)
+                                .addMapIndexConfig(new MapIndexConfig(
+                                                HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
+
+                return Hazelcast.newHazelcastInstance(config); 3⃣️
+        }
+
+}
+```
+1⃣️@EnableHazelcastHttpSession注解创建一个名为springSessionRepositoryFilter的Spring Bean，该Bean实现Filter接口。 该过滤器是负责由Spring Session替换HttpSession的过程。 在这种情况下，Spring Session由Hazelcast提供支持。
+
+2⃣️为了支持按主体名称索引Session，需要注册适当的ValueExtractor。 Spring Session为此提供了PrincipalNameExtractor。
+
+3⃣️我们创建一个将Spring Session连接到Hazelcast的HazelcastInstance。 默认情况下，应用程序启动并连接到一个嵌入式的Hazelcast实例。 有关配置Hazelcast的更多信息，请参阅参考文档。
+
+##### Servlet容器初始化
+我们的Spring Configuration创建了一个实现了Filter接口，并且名为springSessionRepositoryFilter的Spring Bean。 springSessionRepositoryFilter bean负责使用Spring Session支持的自定义实现替换HttpSession。
+为了使我们的过滤器能够做到这一点，Spring需要加载我们的SessionConfig类。 由于我们的应用程序已经使用SecurityInitializer类加载了Spring配置，所以我们可以简单地添加我们的SessionConfig类。
+src/main/java/sample/SecurityInitializer.java
+
+```
+public class SecurityInitializer extends AbstractSecurityWebApplicationInitializer {
+
+        public SecurityInitializer() {
+                super(SecurityConfig.class, SessionConfig.class);
+        }
+}
+```
+最后，我们需要确保我们的Servlet容器（即Tomcat）为每个请求使用我们的springSessionRepositoryFilter。 在Spring Security的springSecurityFilterChain之前调用Spring Session的springSessionRepositoryFilter是非常重要的。 这样可以确保Spring Security使用的HttpSession由Spring Session支持。 幸运的是，Spring Session提供了一个名为AbstractHttpSessionApplicationInitializer的实用程序类，使其非常简单。 你可以在下面找到一个例子：
+src/main/java/sample/Initializer.java
+
+```
+public class Initializer extends AbstractHttpSessionApplicationInitializer {
+
+}
+```
+> 我们的类（Initializer）的名称并不重要。 重要的是我们扩展AbstractHttpSessionApplicationInitializer。
+通过扩展AbstractHttpSessionApplicationInitializer，我们确保在Spring Security的springSecurityFilterChain之前，Spring Bean的名称为springSessionRepositoryFilter，在Servlet容器中注册了每个请求。
+
+## 4.7 HttpSession集成的工作原理
+幸运的是，HttpSession和HttpServletRequest（用于获取HttpSession的API）都是接口。 这意味着我们可以为每个这些API提供我们自己的实现。
+> 本节介绍Spring Session如何提供与HttpSession的透明集成。 目的是让用户可以了解底层的原理。 此功能已经集成，您不需要自己实现此逻辑。
+
+首先我们创建一个自定义的HttpServletRequest，返回HttpSession的自定义实现。 它看起来像下面这样：
+
+```
+public class SessionRepositoryRequestWrapper extends HttpServletRequestWrapper {
+
+        public SessionRepositoryRequestWrapper(HttpServletRequest original) {
+                super(original);
+        }
+
+        public HttpSession getSession() {
+                return getSession(true);
+        }
+
+        public HttpSession getSession(boolean createNew) {
+                // create an HttpSession implementation from Spring Session
+        }
+
+        // ... other methods delegate to the original HttpServletRequest ...
+}
+```
+任何返回HttpSession的方法都将被覆盖。 所有其他方法都由HttpServletRequestWrapper实现，只需委托给原来的HttpServletRequest实现。
+
+我们使用名为SessionRepositoryFilter的Servlet Filter来替换HttpServletRequest实现。 伪代码可以在下面找到：
+
+```
+public class SessionRepositoryFilter implements Filter {
+
+        public doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+                HttpServletRequest httpRequest = (HttpServletRequest) request;
+                SessionRepositoryRequestWrapper customRequest =
+                        new SessionRepositoryRequestWrapper(httpRequest);
+
+                chain.doFilter(customRequest, response, chain);
+        }
+
+        // ...
+}
+```
+通过将自定义的HttpServletRequest实现传递给FilterChain，我们确保在过滤器使用自定义HttpSession实现后调用的任何内容。 这突出了为什么重要的是Spring Session的SessionRepositoryFilter必须放在与HttpSession交互的任何内容之前。
+## 4.8 单浏览器中的多个HttpSession
+Spring Session能够在单个浏览器实例中支持多个Session。 这样可以支持在同一浏览器实例（例如Google帐户）中进行多个用户进行身份验证。
+> “Manage Multiple Users Guide”提供了在同一浏览器实例中管理多个用户的完整工作示例。 您可以按照以下基本步骤进行集成，但是当与您自己的应用程序集成时，建议您遵循详细的“管理多用户指南”。
+
+我们来看看Spring Session如何跟踪多个会话。
+### 管理单个Session
+Spring Session通过向名为SESSION的cookie添加值来跟踪HttpSession。 例如，SESSION cookie可能具有以下值：
+
+```
+7e8383a4-082c-4ffe-a4bc-c40fd3363c5e
+```
+### 添加一个Session
+我们可以通过请求包含特殊参数的URL来添加另一个会话。 默认情况下，参数名称为_s。 例如，以下URL将创建一个新的Session：
+
+HTTP://localhost:8080/_s=1
+
+> 参数值不表示实际的会话ID。 这很重要，因为我们不希望允许客户端确定会话ID以避免Session固定攻击。 另外，我们不希望会话ID被作为查询参数发送。 记住敏感信息只能作为Header或请求的Body传送。
+
+除了自己创建URL，我们可以利用HttpSessionManager来创建一个Session。 我们可以使用以下方法从HttpServletRequest获取HttpSessionManager：
+src/main/java/sample/UserAccountsFilter.java
+
+```
+HttpSessionManager sessionManager = (HttpSessionManager) httpRequest
+        .getAttribute(HttpSessionManager.class.getName());
+```
+我们现在可以使用它创建一个URL来添加另一个Session。
+src/main/java/sample/UserAccountsFilter.java
+
+```
+String addAlias = unauthenticatedAlias == null ? 1⃣️ 
+        sessionManager.getNewSessionAlias(httpRequest)
+        : 2⃣️
+        unauthenticatedAlias; 3⃣️
+String addAccountUrl = sessionManager.encodeURL(contextPath, addAlias); 4⃣️
+```
+1⃣️我们有一个名为unauthenticatedAlias的变量。 该值是指向现有未认证Session的别名。 如果不存在此Session，则该值为null。 这样可以确保我们使用现有的未经身份验证的Session，而不是创建新的Session。
+
+2⃣️如果我们所有的Session都已经与用户关联，我们将创建一个新的Session别名。
+
+3⃣️如果存在与用户没有关联的现有Session，则会使用其Session别名。
+
+4⃣️最后，我们创建添加帐户URL。 该URL包含一个Session别名，它指向一个现有的未认证Session，或者是一个未被使用的别名，从而发出信号，创建与该别名关联的新Session。
+现在我们的SESSION cookie看起来像这样：
+
+```
+0 7e8383a4-082c-4ffe-a4bc-c40fd3363c5e 1 1d526d4a-c462-45a4-93d9-84a39b6d44ad
+```
+这样：
+
+* sessionID为 7e8383a4-082c-4ffe-a4bc-c40fd3363c5e
+
+* 此Session的别名为0.例如，如果URL为http://localhost:8080 /？_s = 0，则将使用此别名。
+
+* 这是默认Session。 这意味着如果没有指定Session别名，则使用此Session。 例如，如果URL是http://localhost:8080/将使用此Session。
+
+* Sessionid 1d526d4a-c462-45a4-93d9-84a39b6d44ad
+1. 此Session的别名为1.如果Session别名为1，则使用此Session。 例如，如果URL是http：// localhost:8080 /？_s = 1，则使用此别名。
+### 自动包含Session别名的encodeURL
+在URL中指定Session别名的好处是，我们可以使用不同的活动Session打开多个选项卡。 不好的是，我们需要在我们应用程序的每个URL中包含Session别名。 幸运的是，Spring Session会通过HttpServletResponse＃encodeURL（java.lang.String）方法自动在URL中添加Session别名，
+
+这意味着如果您使用标准标签库，Session别名将自动包含在URL中。 例如，如果我们正在使用具有1的别名的会话，那么以下内容：
+src/main/webapp/index.jsp
+
+```
+<c:url value="/link.jsp" var="linkUrl"/>
+<a id="navLink" href="${linkUrl}">Link</a>
+```
+输出的链接如下：
+
+```
+<a id="navLink" href="/link.jsp?_s=1">Link</a>
+```
 
 ## 4.9 HttpSession & RESTful APIs
 
