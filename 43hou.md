@@ -105,7 +105,7 @@ public class Initializer extends AbstractHttpSessionApplicationInitializer { 1�
 
 > 注意：我们的类（Initializer）的名称并不重要。 重要的是需要扩展AbstractHttpSessionApplicationInitializer类即可。
 
-1⃣️第一步是扩展AbstractHttpSessionApplicationInitializer。 这确保了一个名为springSessionRepositoryFilter的Spring bean已经注册到我们的Servlet容器并用于每个请求。
+1⃣️第一步是扩展AbstractHttpSessionApplicationInitializer类。 这确保了一个名为springSessionRepositoryFilter的Spring bean已经注册到我们的Servlet容器并应用于每个请求。
 
-2⃣️AbstractHttpSessionApplicationInitializer还提供了一种容易允许Spring加载我们的ClientConfig的机制。
+2⃣️AbstractHttpSessionApplicationInitializer还提供了一种便于Spring加载我们的ClientConfig的机制。
 
