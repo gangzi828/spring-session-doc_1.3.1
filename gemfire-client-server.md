@@ -110,3 +110,17 @@ META-INF / spring / application.properties文件与PropertySourcesPlaceholderCon
 
 GemFire Server配置可以通过以下方式进行引导：
 
+```
+@Configuration 
+@ImportResource("META-INF/spring/session-server.xml") 
+public class Application {
+
+        public static void main(final String[] args) {
+                new AnnotationConfigApplicationContext(Application.class)
+                        .registerShutdownHook();
+        }
+}
+```
+
+
+
