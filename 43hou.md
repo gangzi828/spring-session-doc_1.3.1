@@ -80,9 +80,9 @@ public class ServerConfig {
 
 3⃣️然后，我们创建一个基于GemFire系统属性的GemFire对等缓存实例。
 
-我们还设置了在localhost上运行的GemFire CacheServer实例，侦听端口12480，准备接受我们的客户端连接。
+4⃣️我们还设置了在localhost上运行的GemFire CacheServer实例，监听端口12480，准备接受我们的客户端连接。
 
-最后，我们将一个主要方法声明为从命令行启动和运行GemFire Server的入口点。
+5⃣️最后，我们将一个main方法声明为从命令行启动作为运行GemFire Server的入口点。
 
 ##### Java Servlet容器初始化 {#java-servlet-container-initialization-2}
 
