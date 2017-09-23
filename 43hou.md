@@ -74,11 +74,11 @@ public class ServerConfig {
 }
 ```
 
-在服务器上，我们也使用@EnableGemFireHttpSession注释来配置Spring Session。 这确保了客户端和服务器上的区域名称匹配（在此示例中，我们使用默认的“ClusteredSpringSessions”）。 我们还将会话超时设置为30秒。 稍后我们将看到如何使用这个超时。
+1⃣️在服务器端也使用@EnableGemFireHttpSession注解来配置Spring Session。 这确保了客户端和服务端的区域名称匹配（在此示例中，我们使用默认的“ClusteredSpringSessions”）。 我们还将Session的过期时间设置为30秒。 稍后我们将看到如何使用这个过期时间。
 
-接下来，我们使用GemFire系统属性配置GemFire服务器非常像我们的P2P示例。 将mcast-port设置为0并且没有指定locator属性，我们的服务器将是独立的。 我们还允许一个JMX客户端（例如Gfsh）使用特定于GemFire的JMX系统属性连接到我们的服务器。
+2⃣️接下来，我们使用GemFire系统属性配置GemFire服务器，这非常像我们的P2P示例中的配置。 为了使服务端保持独立，我们将mcast-port设置为0并且没有指定locator属性。GemFire服务端还允许一个使用JMX客户端（例如Gfsh）来连接，但是该JMX必须的系统属性必须是特定于GemFire的。
 
-然后，我们创建一个使用我们的GemFire系统属性初始化的GemFire对等缓存的实例。
+3⃣️然后，我们创建一个基于GemFire系统属性的GemFire对等缓存实例。
 
 我们还设置了在localhost上运行的GemFire CacheServer实例，侦听端口12480，准备接受我们的客户端连接。
 
