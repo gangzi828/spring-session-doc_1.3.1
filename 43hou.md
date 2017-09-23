@@ -2,10 +2,10 @@
 
 我们只涵盖了等式的一边。 我们还需要一个GemFire服务器端，我们的客户端可以与服务器进行通话并且将Session状态发送至服务器端，以进行管理。
 
-在本示例中，我们将使用以下GemFire Server Java配置：
+在本示例中，GemFire服务端的Java配置如下：
 
 ```
-@EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 
+@EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 1⃣️
 public class ServerConfig {
 
         static final int SERVER_PORT = 12480;
@@ -14,7 +14,7 @@ public class ServerConfig {
         static final String SERVER_HOST = "localhost";
 
         @SuppressWarnings("resource")
-        public static void main(String[] args) throws IOException { 
+        public static void main(String[] args) throws IOException { 5⃣️
                 new AnnotationConfigApplicationContext(ServerConfig.class)
                         .registerShutdownHook();
         }
@@ -24,7 +24,7 @@ public class ServerConfig {
                 return new PropertySourcesPlaceholderConfigurer();
         }
 
-        Properties gemfireProperties() { 
+        Properties gemfireProperties() { 2⃣️
                 Properties gemfireProperties = new Properties();
 
                 gemfireProperties.setProperty("name", applicationName());
@@ -47,7 +47,7 @@ public class ServerConfig {
         }
 
         @Bean
-        CacheFactoryBean gemfireCache() { 
+        CacheFactoryBean gemfireCache() { 3⃣️
                 CacheFactoryBean gemfireCache = new CacheFactoryBean();
 
                 gemfireCache.setClose(true);
@@ -58,7 +58,7 @@ public class ServerConfig {
 
         @Bean
         CacheServerFactoryBean gemfireCacheServer(Cache gemfireCache,
-                        @Value("${spring.session.data.gemfire.port:" + SERVER_PORT + "}") int port) { 
+                        @Value("${spring.session.data.gemfire.port:" + SERVER_PORT + "}") int port) { 4⃣️
 
                 CacheServerFactoryBean gemfireCacheServer = new CacheServerFactoryBean();
 
