@@ -100,19 +100,19 @@ Spring Session通过添加Servlet过滤器来实现替换HttpSession的，可以
 添加所需的依赖关系后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session支持的实现替换HttpSession实现的Servlet过滤器。 添加以下Spring配置：
 
 ```
-@EnableRedisHttpSession 1⃣
+@EnableRedisHttpSession 1⃣️
 public class Config {
 
         @Bean
         public LettuceConnectionFactory connectionFactory() {
-                return new LettuceConnectionFactory(); 2⃣
+                return new LettuceConnectionFactory(); 2⃣️
         }
 }
 ```
 
-1⃣@EnableRedisHttpSession注释创建一个名为springSessionRepositoryFilter的Spring Bean，该实例实现了Filter。 过滤器是负责替换由Spring Session支持的HttpSession实现的过程。 在这种情况下，Spring Session由Redis支持。
+1⃣️@EnableRedisHttpSession注释创建一个名为springSessionRepositoryFilter的Spring Bean，该实例实现了Filter。 过滤器是负责替换由Spring Session支持的HttpSession实现的过程。 在这种情况下，Spring Session由Redis支持。
 
-2⃣我们创建一个将Spring Session连接到Redis Server的RedisConnectionFactory。 我们配置默认端口为（6379）。有关配置，请参考Spring Data Redis的参考文档。
+2⃣️我们创建一个将Spring Session连接到Redis Server的RedisConnectionFactory。 我们配置默认端口为（6379）。有关配置，请参考Spring Data Redis的参考文档。
 
 #### Java Servlet容器的初始化
 
@@ -123,19 +123,19 @@ public class Config {
 src/main/java/sample/Initializer.java
 
 ```
-public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣
+public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣️
 
         public Initializer() {
-                super(Config.class); 2⃣
+                super(Config.class); 2⃣️
         }
 }
 ```
 
 > 我们的类（Initializer）的名称并不重要。 重要的是我们扩展AbstractHttpSessionApplicationInitializer。
 
-1⃣第一步是扩展AbstractHttpSessionApplicationInitializer。 这样可以确保springSessionRepositoryFilter针对每个请求都会在Servlet容器注册。
+1⃣️第一步是扩展AbstractHttpSessionApplicationInitializer。 这样可以确保springSessionRepositoryFilter针对每个请求都会在Servlet容器注册。
 
-2⃣AbstractHttpSessionApplicationInitializer还提供了一种机制，可以确保Spring加载我们的Config。
+2⃣️AbstractHttpSessionApplicationInitializer还提供了一种机制，可以确保Spring加载我们的Config。
 
 ### 4.2.2基于XML的配置方式
 
@@ -150,17 +150,17 @@ public class Initializer extends AbstractHttpSessionApplicationInitializer { 1�
 src/main/webapp/WEB-INF/spring/session.xml
 
 ```
-1⃣
+1⃣️
 <context:annotation-config/>
 <bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"/>
 
-2⃣
+2⃣️
 <bean class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory"/>
 ```
 
-1⃣我们使用&lt;context:annotation-config /&gt;和RedisHttpSessionConfiguration的组合，因为Spring Session还没有提供XML Namespace支持（参见gh-104）。 这将创建一个Spring Bean，名称为springSessionRepositoryFilter，该Bean实现Filter接口，是负责替换由Spring Session支持的HttpSession实现的过程。 在这种情况下，Spring Session由Redis支持。
+1⃣️我们使用&lt;context:annotation-config /&gt;和RedisHttpSessionConfiguration的组合，因为Spring Session还没有提供XML Namespace支持（参见gh-104）。 这将创建一个Spring Bean，名称为springSessionRepositoryFilter，该Bean实现Filter接口，是负责替换由Spring Session支持的HttpSession实现的过程。 在这种情况下，Spring Session由Redis支持。
 
-2⃣我们创建一个将Spring Session连接到Redis Server的RedisConnectionFactory。 我们配置默认端口为（6379）。有关配置，请参考Spring Data Redis的参考文档。
+2⃣️我们创建一个将Spring Session连接到Redis Server的RedisConnectionFactory。 我们配置默认端口为（6379）。有关配置，请参考Spring Data Redis的参考文档。
 
 #### **以XML方式配置Servlet容器的初始化**
 
@@ -378,7 +378,6 @@ serverRegionShort在客户机/服务器缓存配置中被忽略，仅在使用�
 我们只涵盖了等式的一边。 我们还需要一个GemFire服务器端，我们的客户端可以与服务器进行通话并且将Session状态发送至服务器端，以进行管理。
 
 在本示例中，GemFire服务端的Java配置如下：  
-\`
 
 ```
 @EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30) 1⃣️
@@ -446,10 +445,10 @@ public class ServerConfig {
 
             return gemfireCacheServer;
     }
-```
+
 
 }  
-\`
+```
 
 1⃣️在服务器端也使用@EnableGemFireHttpSession注解来配置Spring Session。 这确保了客户端和服务端的区域名称匹配（在此示例中，我们使用默认的“ClusteredSpringSessions”）。 我们还将Session的过期时间设置为30秒。 稍后我们将看到如何使用这个过期时间。
 
@@ -471,15 +470,17 @@ public class ServerConfig {
 
 src/main/java/sample/Initializer.java
 
-public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣️
 
 ```
+public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣️
+
     public Initializer() {
             super(ClientConfig.class); 2⃣️
     }
-```
 
 }  
+```
+
 注意：我们的类（Initializer）的名称并不重要。 重要的是需要扩展AbstractHttpSessionApplicationInitializer类即可。  
 1⃣️第一步是扩展AbstractHttpSessionApplicationInitializer类。 这确保了一个名为springSessionRepositoryFilter的Spring bean已经注册到我们的Servlet容器并应用于每个请求。
 
@@ -555,31 +556,29 @@ public class Initializer extends AbstractHttpSessionApplicationInitializer { 1�
 在本示例中，我们将使用以下GemFire Server Java配置：
 
 ```
-		1⃣️
-        <context:annotation-config/>
-		2⃣️
-        <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
+1⃣️
+ <context:annotation-config/>
+2⃣️
+ <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
 
-		3⃣️
-        <util:properties id="gemfireProperties">
-                <prop key="name">GemFireClientServerHttpSessionXmlSample</prop>
-                <prop key="mcast-port">0</prop>
-                <prop key="log-level">${sample.httpsession.gemfire.log-level:warning}</prop>
-                <prop key="jmx-manager">true</prop>
-                <prop key="jmx-manager-start">true</prop>
-        </util:properties>
-		4⃣️
-
-        <gfe:cache properties-ref="gemfireProperties"/>
-		5⃣️
-
-        <gfe:cache-server auto-startup="true"
+3⃣️
+ <util:properties id="gemfireProperties">
+       <prop key="name">GemFireClientServerHttpSessionXmlSample</prop>
+          <prop key="mcast-port">0</prop>
+          <prop key="log-level">${sample.httpsession.gemfire.log-level:warning}</prop>
+          <prop key="jmx-manager">true</prop>
+          <prop key="jmx-manager-start">true</prop>
+ </util:properties>
+4⃣️
+<gfe:cache properties-ref="gemfireProperties"/>
+5⃣️
+<gfe:cache-server auto-startup="true"
                       bind-address="${application.gemfire.client-server.host}"
                       host-name-for-clients="${application.gemfire.client-server.host}"
                       port="${spring.session.data.gemfire.port:${application.gemfire.client-server.port}}"/>
 
-		6⃣️
-        <bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
+6⃣️
+<bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
                   p:maxInactiveIntervalInSeconds="30"/>
 ```
 
@@ -621,19 +620,24 @@ public class Application {
 为了使我们的过滤器能够做到这一点，我们需要指示Spring加载session-client.xml配置文件。 我们通过以下配置来做到这一点：
 
 src/main/webapp/WEB-INF/web.xml
-`<context-param>
+
+```
+<context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>/WEB-INF/spring/session-client.xml</param-value>
 </context-param>
 <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-</listener>`
+</listener>
+```
 ContextLoaderListener读取contextConfigLocation上下文参数值，并选取我们的session-client.xml配置文件。
 
 最后，我们需要确保我们的Servlet容器（即Tomcat）为每个请求使用我们的springSessionRepositoryFilter。
 
 以下代码段为我们执行最后一步：
-`<filter>
+
+```
+<filter>
     <filter-name>springSessionRepositoryFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 </filter>
@@ -642,7 +646,9 @@ ContextLoaderListener读取contextConfigLocation上下文参数值，并选取�
     <url-pattern>/*</url-pattern>
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>ERROR</dispatcher>
-</filter-mapping>`
+</filter-mapping>
+```
+
 DelegatingFilterProxy将通过springSessionRepositoryFilter的名称查找一个bean，并将其转换为Filter。 对于调用DelegatingFilterProxy的每个请求，将调用springSessionRepositoryFilter。
 ### 4.3.2 GemFire Peer-To-Peer (P2P)
 
@@ -666,7 +672,8 @@ P2P对于测试目的以及更小，更集中和自包含的应用程序（如�
 
 添加以下Spring配置：
 
-`@EnableGemFireHttpSession 
+```
+@EnableGemFireHttpSession 
 public class Config {
 
         @Bean
@@ -692,7 +699,8 @@ public class Config {
 
                 return gemfireCache;
         }
-}`
+}
+```
 
 @EnableGemFireHttpSession注释创建一个名为springSessionRepositoryFilter的Spring bean，实现Filter。 这个过滤器是用Hibernate来替代HttpSession的一个实现。 在这种情况下，Spring Session由GemFire支持。
 然后，我们使用标准的GemFire系统属性配置GemFire对等缓存。 我们使用name属性给GemFire数据节点一个名称，并将mcast-port设置为0.由于缺少locators属性，该数据节点将是一个独立的服务器。 GemFire的日志级别使用用户可以使用Maven或Gradle运行此示例应用程序时在命令行中指定的应用程序特定的System属性（sample.httpsession.gemfire.log级别）设置（默认为“warning”）。
