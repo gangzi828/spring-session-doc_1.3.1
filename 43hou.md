@@ -86,5 +86,24 @@ public class ServerConfig {
 
 ##### Java Servlet容器初始化 {#java-servlet-container-initialization-2}
 
+我们的Spring Java配置创建了一个名为springSessionRepositoryFilter的Spring bean，该Bean实现了Filter接口。 springSessionRepositoryFilter bean负责使用基于GemFire支持的Spring Session来替换HttpSession。
+
+为了使springSessionRepositoryFilter过滤器能够做到这一点，Spring需要加载我们的ClientConfig配置类。 还需要确保Servlet容器（即Tomcat）为每个请求使用springSessionRepositoryFilter。 幸运的是，Spring Session提供了一个名为AbstractHttpSessionApplicationInitializer的实用程序类，使这两个步骤都非常容易。
+
+可以参考如下示例：
+
+src/main/java/sample/Initializer.java
+
+```
+public class Initializer extends AbstractHttpSessionApplicationInitializer { 1⃣️
+
+        public Initializer() {
+                super(ClientConfig.class); 2⃣️
+        }
+}
+```
+
+> 注意：我们的类（Initializer）的名称并不重要。 重要的是需要扩展AbstractHttpSessionApplicationInitializer类即可。
+
 
 
