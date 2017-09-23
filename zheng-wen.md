@@ -233,12 +233,13 @@ DelegatingFilterProxy将根据springSessionRepositoryFilter按名称查找一个
 
 ##### spring  java配置
 
+
 添加所需的依赖关系和存储库声明后，我们可以创建我们的Spring配置。 Spring配置负责创建一个使用Spring Session和GemFire支持的实现替换HttpSession的Servlet过滤器。
 
 添加以下Spring配置：
 
 ```
-@EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30, poolName = "DEFAULT") 
+@EnableGemFireHttpSession(maxInactiveIntervalInSeconds = 30, poolName = "DEFAULT") 1⃣️
 public class ClientConfig {
 
         static final long DEFAULT_WAIT_DURATION = TimeUnit.SECONDS.toMillis(20);
