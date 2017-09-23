@@ -68,13 +68,12 @@ META-INF / spring / application.properties文件与PropertySourcesPlaceholderCon
 在本示例中，我们将使用以下GemFire Server Java配置：
 
 ```
-  
         <context:annotation-config/>
 
-        
+
         <context:property-placeholder location="classpath:META-INF/spring/application.properties"/>
 
-        
+
         <util:properties id="gemfireProperties">
                 <prop key="name">GemFireClientServerHttpSessionXmlSample</prop>
                 <prop key="mcast-port">0</prop>
@@ -83,19 +82,31 @@ META-INF / spring / application.properties文件与PropertySourcesPlaceholderCon
                 <prop key="jmx-manager-start">true</prop>
         </util:properties>
 
-        
+
         <gfe:cache properties-ref="gemfireProperties"/>
 
-        
+
         <gfe:cache-server auto-startup="true"
                       bind-address="${application.gemfire.client-server.host}"
                       host-name-for-clients="${application.gemfire.client-server.host}"
                       port="${spring.session.data.gemfire.port:${application.gemfire.client-server.port}}"/>
 
-        
+
         <bean class="org.springframework.session.data.gemfire.config.annotation.web.http.GemFireHttpSessionConfiguration"
                   p:maxInactiveIntervalInSeconds="30"/>
 ```
 
+首先，我们使用&lt;context：annotation-config&gt;元素启用Spring注释配置，以便在Spring配置中声明的任何使用Spring支持的Spring或Standard Java注释的Spring bean都将被正确配置。
 
+注册了一个PropertySourcesPlaceholderConfigurer，以便在我们的Spring XML配置元数据中替换META-INF / spring / application.properties文件中的属性值中的占位符。
+
+接下来，我们使用GemFire系统属性配置GemFire服务器非常像我们的P2P示例。将mcast-port设置为0并且没有指定locator属性，我们的服务器将是独立的。我们还允许一个JMX客户端（例如Gfsh）使用特定于Ge​​mFire的JMX系统属性连接到我们的服务器。
+
+然后我们创建一个使用我们的GemFire系统属性初始化的GemFire对等缓存的实例。
+
+我们还设置了运行在localhost上的GemFire CacheServer实例，侦听端口11235，准备接受我们的客户端连接。
+
+最后，我们通过注册GemFireHttpSessionConfiguration的实例，在客户端上使用相同的Spring Session功能，但我们将会话到期超时设置为30秒。我们稍后会解释这是什么意思。
+
+GemFire Server配置可以通过以下方式进行引导：
 
