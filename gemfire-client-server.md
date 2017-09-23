@@ -124,5 +124,7 @@ public class Application {
 
 > 而不是使用主要方法的简单Java类，您也可以使用Spring Boot。
 
+@Configuration注释将此Java类定义为使用Spring的注释配置支持的Spring配置元数据的源。
 
+主要来说，配置来自META-INF / spring / session-server.xml文件，这也是Spring样例中没有使用Spring Boot的原因，因为使用XML似乎失败了使用Spring Boot的用途和好处。 但是，本示例将介绍如何使用Spring XML配置GemFire客户端和服务器。
 
