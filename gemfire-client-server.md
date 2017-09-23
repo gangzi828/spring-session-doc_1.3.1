@@ -128,3 +128,7 @@ public class Application {
 
 主要来说，配置来自META-INF / spring / session-server.xml文件，这也是Spring样例中没有使用Spring Boot的原因，因为使用XML似乎失败了使用Spring Boot的用途和好处。 但是，本示例将介绍如何使用Spring XML配置GemFire客户端和服务器。
 
+##### XML Servlet Container Initialization {#xml-servlet-container-initialization-2}
+
+
+
