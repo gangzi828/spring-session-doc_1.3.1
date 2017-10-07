@@ -1,4 +1,4 @@
-![](/Users/gangzi/Desktop/D16300DF-7129-40A9-ABB3-6423ED500F35.png)
+
 ---
 
 # Spring Session
@@ -10,7 +10,7 @@ Version 1.3.1.RELEASE
 ---
 # 关于本翻译
 这是本人工作之余翻译的，方便自己使用，也贡献出来方便其他人。有翻译不正确的地方请指正。如果您觉得本文对您有所帮助，不妨打赏小弟一杯咖啡。
-![](/Users/gangzi/Desktop/9EE096F7-33E3-4B41-8B63-735068213E73.png)
+![](me.png)
 
 ---
 
@@ -20,15 +20,17 @@ Version 1.3.1.RELEASE
 
 Spring Session提供了一个用于管理用户会话信息的API和实现。 它还提供了与HttpSession和WebSocket透明的集成：
 
-nHttpSession -允许在应用程序容器（即Tomcat）中替换HttpSession。 其他功能包括：
+- HttpSession -允许在应用程序容器（即Tomcat）中替换HttpSession。 其他功能包括：
 
-l集群Session支持 - Spring Session使得集群Session非常简单，这使得集群Session的解决方案不依赖于应用程序容器特定的解决方案。
+	* 集群Session支持 - Spring Session使得集群Session非常简单，这使得集群Session的解决方案不依赖于应用程序容器特定的解决方案。
 
-l多个浏览器会话支持 - Spring Session支持在单个浏览器实例中管理多个用户的会话（即与Google类似的多个经过身份验证的帐户）。
+	* 多个浏览器会话支持 - Spring Session支持在单个浏览器实例中管理多个用户的会话（即与Google类似的多个经过身份验证的帐户）。
 
-lRESTful API支持 - Spring Session允许在Http请求头中提供会话ID以使用RESTful API
+	* RESTful API支持 - Spring Session允许在Http请求头中提供会话ID以使用RESTful API
 
-nWebSocket -提供了在接收WebSocket消息时保持HttpSession处于激活状态的功能。
+- WebSocket -提供了在接收WebSocket消息时保持HttpSession处于激活状态的功能。
+
+---
 
 # 2.Spring Session1.3的新特性
 
@@ -41,6 +43,8 @@ nWebSocket -提供了在接收WebSocket消息时保持HttpSession处于激活状
 * Lettuce参考指南
 * spring.session.cleanup.cron.expression可用于覆盖清理任务的cron表达式。
 * 许多性能上的改进和bug修复
+
+---
 
 # 3.示例与入门指南
 
@@ -70,6 +74,7 @@ nWebSocket -提供了在接收WebSocket消息时保持HttpSession处于激活状
 | [HttpSession JDBC XML](https://github.com/spring-projects/spring-session/tree/1.3.1.RELEASE/samples/httpsession-jdbc-xml) | 演示Spring Session基于XML的配置方式替换Https session，将关系数据库作为Session存储容器 | [HttpSession JDBC XML Guide](https://docs.spring.io/spring-session/docs/1.3.1.RELEASE/reference/html5/guides/httpsession-jdbc-xml.html) |
 | [HttpSession JDBC Spring Boot](https://github.com/spring-projects/spring-session/tree/1.3.1.RELEASE/samples/httpsession-jdbc-boot) | 演示在Spring boot应用中使用Spring Session替换 Https session，将关系数据库作为Session存储容器 | [HttpSession JDBC Spring Boot Guide](https://docs.spring.io/spring-session/docs/1.3.1.RELEASE/reference/html5/guides/httpsession-jdbc-boot.html) |
 
+---
 # 4.HttpSession的集成
 
 Spring Session支持与HttpSession的透明集成。 这意味着开发人员可以使用Spring Session支持的实现来切换HttpSession实现。
@@ -1488,21 +1493,21 @@ session的典型用法如下：
 
 ```
 public class RepositoryDemo<S extends Session> {
-    private SessionRepository<S> repository; 1⃣
+    private SessionRepository<S> repository; 1⃣️
 
     public void demo() {
-        S toSave = this.repository.createSession(); 2⃣
+        S toSave = this.repository.createSession(); 2⃣️
 
-        3⃣
+        3⃣️
         User rwinch = new User("rwinch");
         toSave.setAttribute(ATTR_USER, rwinch);
 
-        this.repository.save(toSave); 4⃣
+        this.repository.save(toSave); 4⃣️
 
         S session = this.repository.getSession(toSave.getId()); 
 
-        6⃣
-        User user = session.getAttribute(ATTR_USER);5⃣
+        6⃣️
+        User user = session.getAttribute(ATTR_USER);5⃣️
         assertThat(user).isEqualTo(rwinch);
     }
 
@@ -1510,17 +1515,17 @@ public class RepositoryDemo<S extends Session> {
 }
 ```
 
-1⃣创建一个泛型的SessionRepository实例，S代表Session的子类，泛型的具体类型通过SessionRepository来获取。
+1⃣️创建一个泛型的SessionRepository实例，S代表Session的子类，泛型的具体类型通过SessionRepository来获取。
 
-2⃣通过SessionRepository创建一个新的Session实例，将此实例赋值给泛型S声明的变量。
+2⃣️通过SessionRepository创建一个新的Session实例，将此实例赋值给泛型S声明的变量。
 
-3⃣操作Session，这里我们将一个User实例保存到Session中。
+3⃣️操作Session，这里我们将一个User实例保存到Session中。
 
-4⃣保存Session，泛型S的作用就体现在这里. SessionRepository只允许保存使用相同SessionRepository创建或获取的Session实例。 这允许SessionRepository进行特定的优化（即仅写入已经改变的属性）。
+4⃣️保存Session，泛型S的作用就体现在这里. SessionRepository只允许保存使用相同SessionRepository创建或获取的Session实例。 这允许SessionRepository进行特定的优化（即仅写入已经改变的属性）。
 
-5⃣从SessionRepository获取Session实例。
+5⃣️从SessionRepository获取Session实例。
 
-6⃣从Session中获取持久化的User，这里不需要强制类型转换。
+6⃣️从Session中获取持久化的User，这里不需要强制类型转换。
 
 ## 7.2 ExpiringSession
 
@@ -1530,32 +1535,31 @@ ExpiringSession的典型用法如下：
 
 ```
 public class ExpiringRepositoryDemo<S extends ExpiringSession> {
-    private SessionRepository<S> repository; 1⃣
+    private SessionRepository<S> repository; 1⃣️
 
     public void demo() {
-        S toSave = this.repository.createSession(); 2⃣
+        S toSave = this.repository.createSession(); 2⃣️
         // ...
-        toSave.setMaxInactiveIntervalInSeconds(30); 3⃣
+        toSave.setMaxInactiveIntervalInSeconds(30); 3⃣️
 
-        this.repository.save(toSave); 4⃣
+        this.repository.save(toSave); 4⃣️
 
-        S session = this.repository.getSession(toSave.getId()); 5⃣
+        S session = this.repository.getSession(toSave.getId()); 5⃣️
         // ...
     }
 
     // ... setter methods ...
 }
 ```
+1⃣️创建一个泛型的SessionRepository实例，S代表ExpiringSession的子类，泛型的具体类型通过SessionRepository来获取。
 
-1⃣创建一个泛型的SessionRepository实例，S代表ExpiringSession的子类，泛型的具体类型通过SessionRepository来获取。
+2⃣️通过SessionRepository创建一个新的ExpiringSession实例，将此实例赋值给泛型S声明的变量。
 
-2⃣通过SessionRepository创建一个新的ExpiringSession实例，将此实例赋值给泛型S声明的变量。
+3⃣️操作Session，这里我们演示如何在Session过期之前更新Session的过期时间。
 
-3⃣操作Session，这里我们演示如何在Session过期之前更新Session的过期时间。
+4⃣️保存Session，泛型S的作用就体现在这里. SessionRepository只允许保存使用相同SessionRepository创建或获取的Session实例。 这允许SessionRepository进行特定的优化（即仅写入已经改变的属性）。当ExpiringSession被保存时，最后访问时间会自动更新。
 
-4⃣保存Session，泛型S的作用就体现在这里. SessionRepository只允许保存使用相同SessionRepository创建或获取的Session实例。 这允许SessionRepository进行特定的优化（即仅写入已经改变的属性）。当ExpiringSession被保存时，最后访问时间会自动更新。
-
-5⃣从SessionRepository获取Session实例，如果Session已经过期，则结果为Null。
+5⃣️从SessionRepository获取Session实例，如果Session已经过期，则结果为Null。
 
 ## 7.3 SessionRepository
 
@@ -1769,13 +1773,13 @@ XML配置如下：
 ```
 $ redis-cli
 redis 127.0.0.1:6379> keys *
-1) "spring:session:sessions:4fc39ce3-63b3-4e17-b1c4-5e1ed96fb021" 1⃣
-2) "spring:session:expirations:1418772300000" 2⃣
+1) "spring:session:sessions:4fc39ce3-63b3-4e17-b1c4-5e1ed96fb021" 1⃣️
+2) "spring:session:expirations:1418772300000" 2⃣️
 ```
 
-1⃣该key的后缀是Spring Session的会话标识符。
+1⃣️该key的后缀是Spring Session的会话标识符。
 
-2⃣此key包含的所有会话ID在1418772300000时被删除。
+2⃣️此key包含的所有会话ID在1418772300000时被删除。
 
 您还可以查看每个Session的属性。
 
@@ -1985,6 +1989,40 @@ CREATE INDEX SPRING_SESSION_ATTRIBUTES_IX1 ON SPRING_SESSION_ATTRIBUTES (SESSION
 JdbcOperationsSessionRepository中的所有JDBC操作都以事务方式执行。 事务的传播为REQUIRES\_NEW，以避免对现有事务的干扰（例如，在已经参与只读事务的线程中执行保存操作）。
 
 ## 7.10 HazelcastSessionRepository
+
+HazelcastSessionRepository是在Hazelcast分布式IMap中存储会话的SessionRepository实现。 在Web环境中，通常与SessionRepositoryFilter结合使用。
+### 7.10.1 初始化HazelcastSessionRepository
+如何创建新HazelcastSessionRepository实例的典型示例如下所示：
+
+```
+Config config = new Config();
+
+// ... configure Hazelcast ...
+
+HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+
+IMap<String, MapSession> sessions = hazelcastInstance
+        .getMap("spring:session:sessions");
+
+HazelcastSessionRepository repository =
+        new HazelcastSessionRepository(sessions);
+```
+有关如何创建和配置Hazelcast实例的其他信息，请参阅[Hazelcast文档](http://docs.hazelcast.org/docs/latest/manual/html-single/index.html#hazelcast-configuration)。
+### 7.10.2 EnableHazelcastHttpSession
+如果您希望使用Hazelcast作为SessionRepository的备份源，则可以将@EnableHazelcastHttpSession注解添加到@Configuration注解的类中。 @EnableHazelcastHttpSession扩展了@EnableSpringHttpSession注解提供的功能，但在Hazelcast中为您提供了SessionRepository。 您必须提供一个单一的HazelcastInstance bean才能使配置工作。 完整的配置示例可以在示例和指南中找到（[从这里开始](https://docs.spring.io/spring-session/docs/1.3.1.RELEASE/reference/html5/#samples)）
+### 7.10.3 存储细节
+MapSessionRepository将Session存储在Hazelcast的分布式IMap中。 通过使用IMap接口方法get()和put()来获取和存储会话。 此外，values()方法用于支持FindByIndexNameSessionRepository＃findByIndexNameAndIndexValue操作，以及需要使用Hazelcast注册的适当ValueExtractor。 有关此配置的更多详细信息，请参阅Hazelcast Spring示例。 在IMap中的Session过期时间是由Hazelcast支持，将它放在IMap的put（）中的一个条目上进行设置。 空闲时间超过使用时间的条目（会话）将自动从IMap中删除。
+
+您不需要在Hazelcast配置中为IMap配置任何设置，例如max-idle-seconds或过期时间。
+
+### 7.10.4基础自定义配置
+您可以在@EnableHazelcastHttpSession上使用以下属性来自定义配置：
+
+* maxInactiveIntervalInSeconds - 会话过期时间。 默认值为1800秒（30分钟）
+* sessionMapName - 在Hazelcast中用于存储Session数据的分布式Map的名称。
+
+### 7.10.5 Session事件
+通过MapListener监听向分布式Map的添加Session，Session过期以及并删除的Session的事件，这些事件将分别为SessionCreatedEvent，SessionExpiredEvent和SessionDeletedEvent，由ApplicationEventPublisher来触发。
 
 # 8.Spring Session社区
 
